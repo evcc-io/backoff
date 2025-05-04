@@ -137,3 +137,12 @@ func Retry[T any](ctx context.Context, operation Operation[T], opts ...RetryOpti
 		}
 	}
 }
+
+// RetryError attempts the operation until success, a permanent error, or backoff completion.
+// It ensures the operation is executed at least once. It does not return an operation result.
+func RetryError(ctx context.Context, operation func() error, opts ...RetryOption) error {
+	_, err := Retry(ctx, func() (int, error) {
+		return 0, operation()
+	}, opts...)
+	return err
+}
